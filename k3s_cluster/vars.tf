@@ -1,5 +1,7 @@
-variable "AWS_REGION" {
-  type = string
+variable "aws_region" {
+  type        = string
+  default     = "eu-central-1"
+  description = "AWS Zone"
 }
 
 variable "environment" {
@@ -28,13 +30,30 @@ variable "k3s_subnet" {
 # Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type
 # ami-0ea0f26a6d50850c5
 
-variable "AMIS" {
-  type = map(string)
-  default = {
-    us-east-1 = "ami-0f01974d5fd3b4530"
-    us-west-2 = "ami-09b93cc9c91e4ee20"
-    eu-west-1 = "ami-099b1e41f3043ce3a"
+# variable "AMIS" {
+#   type = map(string)
+#   default = {
+#     us-east-1 = "ami-0f01974d5fd3b4530"
+#     us-west-2 = "ami-09b93cc9c91e4ee20"
+#     eu-west-1 = "ami-099b1e41f3043ce3a"
+#   }
+# }
+
+
+variable "vpc_id" {
+  default = "vpc-06c8763e87234ffac"
+}
+
+data "amazon-ami" "al2023" {
+  filters = {
+    virtualization-type = "hvm"
+    name                = "Amazon Linux 2023*"
+    root-device-type    = "ebs"
   }
+  owners      = ["amazon"]
+  most_recent = true
+  # Access Region Configuration
+  region      = "eu-central-1"
 }
 
 variable "PATH_TO_PUBLIC_KEY" {
@@ -46,17 +65,12 @@ variable "PATH_TO_PUBLIC_KEY" {
 variable "PATH_TO_PRIVATE_KEY" {
   type        = string
   default     = "~/.ssh/id_rsa"
-  description = "Path to your private key"
+  description = "Path to a private key"
 }
 
-variable "vpc_id" {
+variable "public_ip_cidr" {
   type        = string
-  description = "The vpc id"
-}
-
-variable "my_public_ip_cidr" {
-  type        = string
-  description = "My public ip CIDR"
+  description = "public ip CIDR"
 }
 
 variable "install_nginx_ingress" {
@@ -91,7 +105,7 @@ variable "certmanager_release" {
 
 variable "certmanager_email_address" {
   type    = string
-  default = "changeme@example.com"
+  default = "vgrinko@bart.team"
 }
 
 variable "efs_persistent_storage" {
@@ -125,9 +139,9 @@ variable "instance_types" {
   type        = map(string)
   default = {
     asg_instance_type_1 = "t3.medium"
-    asg_instance_type_2 = "t3a.medium"
-    asg_instance_type_3 = "c5a.large"
-    asg_instance_type_4 = "c6a.large"
+    # asg_instance_type_2 = "t3a.medium"
+    # asg_instance_type_3 = "c5a.large"
+    # asg_instance_type_4 = "c6a.large"
   }
 }
 
@@ -139,7 +153,7 @@ variable "kube_api_port" {
 
 variable "create_extlb" {
   type        = bool
-  default     = false
+  default     = true
   description = "Create external LB true/false"
 }
 
@@ -157,47 +171,47 @@ variable "extlb_https_port" {
 
 variable "k3s_server_desired_capacity" {
   type        = number
-  default     = 3
+  default     = 1
   description = "K3s server ASG desired capacity"
 }
 
 variable "k3s_server_min_capacity" {
   type        = number
-  default     = 3
+  default     = 1
   description = "K3s server ASG min capacity"
 }
 
 variable "k3s_server_max_capacity" {
   type        = number
-  default     = 4
+  default     = 1
   description = "K3s server ASG max capacity"
 }
 
 variable "k3s_worker_desired_capacity" {
   type        = number
-  default     = 3
+  default     = 2
   description = "K3s server ASG desired capacity"
 }
 
 variable "k3s_worker_min_capacity" {
   type        = number
-  default     = 3
+  default     = 2
   description = "K3s server ASG min capacity"
 }
 
 variable "k3s_worker_max_capacity" {
   type        = number
-  default     = 4
+  default     = 2
   description = "K3s server ASG max capacity"
 }
 
 variable "cluster_name" {
   type        = string
-  default     = "k3s-cluster"
+  default     = "k3s-infra-cluster"
   description = "Cluster name"
 }
 
 variable "expose_kubeapi" {
   type    = bool
-  default = false
+  default = true
 }

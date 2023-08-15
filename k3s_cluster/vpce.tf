@@ -1,6 +1,6 @@
 resource "aws_vpc_endpoint" "vpce_secretsmanager" {
   vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.AWS_REGION}.secretsmanager"
+  service_name      = "com.amazonaws.${var.aws_region}.secretsmanager"
   vpc_endpoint_type = "Interface"
 
   subnet_ids = var.vpc_subnets

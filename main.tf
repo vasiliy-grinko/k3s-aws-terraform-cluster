@@ -6,25 +6,32 @@ variable "AWS_SECRET_KEY" {
 
 }
 
-variable "AWS_REGION" {
-  type        = string
-  default     = "<change_me>"
-  description = "AWS Zone"
+
+data "aws_vpc" "selected" {
+  id = var.vpc_id
+}
+
+resource "aws_subnet" "internal" {
+  vpc_id            = data.aws_vpc.selected.id
+  availability_zone = "eu-central-1a"
+  cidr_block        = cidrsubnet(data.aws_vpc.selected.cidr_block, 4, 1)
 }
 
 module "k3s_cluster" {
-  AWS_REGION                = "<change_me>"
+  source                    = "./k3s_cluster/"
+
+  aws_region                = var.aws_region
   environment               = "staging"
-  my_public_ip_cidr         = "<change_me>"
-  vpc_id                    = "<change_me>"
-  vpc_subnets               = ["<change_me>", "<change_me>", "<change_me>"]
-  vpc_subnet_cidr           = "<change_me>"
+  public_ip_cidr            = "172.31.16.0/20"
+  vpc_id                    = var.vpc_id.id
+  vpc_subnets               = var.
+  vpc_subnet_cidr           = var.vpc_id
   cluster_name              = "k3s-cluster"
   create_extlb              = true # or flase
   expose_kubeapi            = true # or flase
   efs_persistent_storage    = true # or flase
   certmanager_email_address = true # or flase
-  source                    = "./k3s_cluster/"
+  
 }
 
 output "elb_dns_name" {

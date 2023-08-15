@@ -60,7 +60,7 @@ edit the main.tf files and set the following variables:
 
 | Var   | Required | Desc |
 | ------- | ------- | ----------- |
-| `AWS_REGION`       | `yes`       | set the correct aws region based on your needs  |
+| `aws_region`       | `yes`       | set the correct aws region based on your needs  |
 | `vpc_id` | `yes`        | set your vpc-id. You can find your vpc_id in your AWS console (Example: vpc-xxxxx) |
 | `vpc_subnets` | `yes`        | set the list of your VPC subnets. You can find the list of your vpc subnets in your AWS console (Example: subnet-xxxxxx) |
 | `vpc_subnet_cidr` | `yes`        | set your vcp subnet cidr. You can find the VPC subnet CIDR in your AWS console (Example: 172.31.0.0/16) |
